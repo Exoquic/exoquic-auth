@@ -11,7 +11,7 @@ const defaultEnvironment = process.env.EXOQUIC_ENV_CONTEXT || "dev";
  * @param {string} options.apiKey API key for the exoquic server
  * @param {string} [options.serverUrl] for the exoquic server. Defaults to https://dev.exoquic.com if the env EXOQUIC_ENV_CONTEXT is not set
  */
-export function initalizeSubscriptionAuthorizer({ apiKey, serverUrl = `https://${defaultEnvironment}.exoquic.com` }) {
+export function initSubscriptionAuthorizer({ apiKey, serverUrl = `https://${defaultEnvironment}.exoquic.com` }) {
 	exoquicAuth = new ExoquicSubscriptionAuthorizer(apiKey, { serverUrl });
 }
 
@@ -20,11 +20,11 @@ export function initalizeSubscriptionAuthorizer({ apiKey, serverUrl = `https://$
  * This function returns a signed JWT retrieved from Exoquic, containing the topic, channel and subscriptionId as payload
  * specified in the function's parameters. This JWT is the authorized subscription token that should be returned to the end-user.
  * 
- * Before you call this function, you should have called `initalizeSubscriptionAuthorizer` with your API key.
+ * Before you call this function, you should have called `initSubscriptionAuthorizer` with your API key.
  * 
  * @example
  * <pre><code>
- * initalizeSubscriptionAuthorizer({ apiKey: "my-api-key" });
+ * initSubscriptionAuthorizer({ apiKey: "my-api-key" });
  * 
  * const token = await authorizeSubscription({ topic: "my-topic", channel: "my-channel", subscriptionId: "my-subscription-id" });
  * 

@@ -1,4 +1,4 @@
-import { initalizeSubscriptionAuthorizer, authorizeSubscription, ExoquicSubscriptionAuthorizer } from "../src/index";
+import { initSubscriptionAuthorizer, authorizeSubscription, ExoquicSubscriptionAuthorizer } from "../src/index";
 
 global.fetch = jest.fn();
 
@@ -93,7 +93,7 @@ describe('ExoquicSubscriptionAuthorizer', () => {
 
 describe('Global functions', () => {
   it('should initialize subscription authorizer globally', () => {
-    initalizeSubscriptionAuthorizer({ apiKey: "mock-api-key" });
+    initSubscriptionAuthorizer({ apiKey: "mock-api-key" });
     
     // Verify that authorizeSubscription works after initialization
     fetch.mockResolvedValueOnce({
