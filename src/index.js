@@ -43,11 +43,14 @@ export function initSubscriptionAuthorizer({ apiKey, serverUrl = `https://${defa
  * @param {string} options.topic Topic to authorize
  * @param {string} [options.channel] Channel to authorize
  * @param {string} [options.subscriptionId] Subscription ID to authorize
+ * @param {string} [options.resetFrom] reset the subscriber from either 'earliest' or 'latest' event if the supplied subscriptionId is not found. Defaults to 'earliest'.
+ * 
+ * If the subscriptionId is not found or _points to a message that has been deleted_, the subscriber will use the resetFrom option to reset the subscriber.
  * 
  * @returns {Promise<string>} Subscription token (Access token for the subscription).
  */
-export function authorizeSubscription({ topic, channel, subscriptionId }) {
-	return exoquicAuth.authorize({ topic, channel, subscriptionId });
+export function authorizeSubscription({ topic, channel, subscriptionId, resetFrom = 'earliest' }) {
+	return exoquicAuth.authorize({ topic, channel, subscriptionId, resetFrom });
 }
 
 /**
@@ -75,7 +78,7 @@ export class ExoquicSubscriptionAuthorizer {
 	 * 
 	 * @returns {Promise<string>} Subscription token (Access token for the subscription).
 	 */
-	async authorize({ topic, channel, subscriptionId }) {
+	async authorize({ topic, channel, subscriptionId, resetFrom }) {
 		try {
 			const response = await fetch(`${this.serverUrl}/authorize-subscription`, {
 				method: "POST",
@@ -87,6 +90,7 @@ export class ExoquicSubscriptionAuthorizer {
 					topic,
 					channel,
 					subscriptionId,
+					resetFrom,
 				}),
 			});
 
