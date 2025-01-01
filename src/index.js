@@ -44,13 +44,14 @@ export function initSubscriptionAuthorizer({ apiKey, serverUrl = `https://${defa
  * @param {string} [options.channel] Channel to authorize
  * @param {string} [options.subscriptionId] Subscription ID to authorize
  * @param {string} [options.resetFrom] reset the subscriber from either 'earliest' or 'latest' event if the supplied subscriptionId is not found. Defaults to 'earliest'.
+ * @param {string} [options.expiresAt] The expiration date of the subscription token. Defaults to 2 minutes from now in unix timestamp (seconds since epoch).
  * 
  * If the subscriptionId is not found or _points to a message that has been deleted_, the subscriber will use the resetFrom option to reset the subscriber.
  * 
  * @returns {Promise<string>} Subscription token (Access token for the subscription).
  */
-export function authorizeSubscription({ topic, channel, subscriptionId, resetFrom = 'earliest' }) {
-	return exoquicAuth.authorize({ topic, channel, subscriptionId, resetFrom });
+export function authorizeSubscription({ topic, channel, subscriptionId, resetFrom = 'earliest', expiresAt = Math.floor(Date.now() / 1000) + 2 * 60 }) {
+	return exoquicAuth.authorize({ topic, channel, subscriptionId, resetFrom, expiresAt });
 }
 
 /**
@@ -73,12 +74,14 @@ export class ExoquicSubscriptionAuthorizer {
 	 * @param {string} options.topic Topic to authorize
 	 * @param {string} [options.channel] Channel to authorize
 	 * @param {string} [options.subscriptionId] Subscription ID to authorize
+	 * @param {string} [options.resetFrom] reset the subscriber from either 'earliest' or 'latest' event if the supplied subscriptionId is not found. Defaults to 'earliest'.
+	 * @param {string} [options.expiresAt] The expiration date of the subscription token. Defaults to 2 minutes from now in unix timestamp (seconds since epoch).
 	 * 
 	 * @throws {ExoquicError} If the response from Exoquic is not ok
 	 * 
 	 * @returns {Promise<string>} Subscription token (Access token for the subscription).
 	 */
-	async authorize({ topic, channel, subscriptionId, resetFrom }) {
+	async authorize({ topic, channel, subscriptionId, resetFrom, expiresAt }) {
 		try {
 			const response = await fetch(`${this.serverUrl}/authorize-subscription`, {
 				method: "POST",
@@ -91,6 +94,7 @@ export class ExoquicSubscriptionAuthorizer {
 					channel,
 					subscriptionId,
 					resetFrom,
+					expiresAt,
 				}),
 			});
 
