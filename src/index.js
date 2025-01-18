@@ -1,17 +1,16 @@
 
 let exoquicAuth;
 
-const defaultEnvironment = process.env.EXOQUIC_ENV_CONTEXT || "dev";
-
 /**
  * Initialize the subscription authorizer with your API key. This should be called once in your application.
  * Allows you to use the `authorizeSubscription` function to authorize end-user subscription requests.
  * 
  * @param {object} options
  * @param {string} options.apiKey API key for the exoquic server
+ * @param {string} [options.env] Environment to use. Defaults to "dev"
  * @param {string} [options.serverUrl] for the exoquic server. Defaults to https://dev.exoquic.com if the env EXOQUIC_ENV_CONTEXT is not set
  */
-export function initSubscriptionAuthorizer({ apiKey, serverUrl = `https://${defaultEnvironment}.exoquic.com` }) {
+export function initSubscriptionAuthorizer({ apiKey, env = "dev", serverUrl = `https://${env}.exoquic.com` }) {
 	exoquicAuth = new ExoquicSubscriptionAuthorizer(apiKey, { serverUrl });
 }
 
